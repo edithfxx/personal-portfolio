@@ -345,7 +345,7 @@
 
                   <p class="card-desc">
                     {{ shouldTruncate(item) && !item.expanded ?
-                    item.description.x(0, LIMITS.TRUNCATE_LEN) + '...' :
+                    item.description.slice(0, LIMITS.TRUNCATE_LEN) + '...' :
                     item.description }}
                   </p>
 
