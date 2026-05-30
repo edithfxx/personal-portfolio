@@ -1,0 +1,161 @@
+/* ============ 客製化樣式: mobile-menu ============ */
+nav.container-normal {
+  /* 會使 drop-down-menu 跑版所以改為unset */
+  padding: unset;
+}
+
+nav .mobile-menu {
+  display: none;
+  width: 100%;
+}
+
+/* ============ 客製化樣式: drop-down-menu ============ */
+nav .mobile-menu ul.drop-down-menu {
+  background-color: #f2f2f2;
+  width: 100%;
+
+  position: absolute;
+  top: calc(54px + 2px);
+  left: 0;
+  z-index: 9
+}
+
+/* 預設隱藏 下拉選單 */
+nav .mobile-menu ul.drop-down-menu,
+nav .mobile-menu ul.drop-down-sub-menu {
+  display: none;
+}
+
+nav .mobile-menu ul.drop-down-menu li {
+  border-bottom: 1px solid #e6e6e6;
+}
+
+nav .mobile-menu ul.drop-down-menu li a {
+  justify-content: flex-start;
+}
+
+nav .mobile-menu ul.drop-down-menu li a,
+nav .mobile-menu ul.drop-down-menu li label {
+  padding: 12px 8px 13px 15px;
+  font-size: 15px;
+}
+
+nav .mobile-menu ul.drop-down-menu li .drop-down-btn {
+  width: 100%;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav .mobile-menu ul.drop-down-sub-menu {
+  padding-left: 20px;
+}
+
+nav .mobile-menu ul.drop-down-sub-menu .link-black-btn:hover,
+nav .mobile-menu ul.drop-down-sub-menu .link-black-btn:focus {
+  background-color: #d9d9d9;
+}
+
+nav .mobile-menu ul.drop-down-sub-menu .link-black-btn:focus span,
+nav .mobile-menu ul.drop-down-sub-menu .link-black-btn:hover span {
+  border-bottom: 1px solid black;
+}
+
+
+/* ============ 客製化樣式: ham-btn ============ */
+.ham-btn {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+
+  /* 因 drop-down-menu 會跑版所以改為 ham-btn 加上 padding-left */
+  padding: 0 10px;
+}
+
+.ham-btn:focus {
+  outline: .1875rem dotted #262626;
+  outline-offset: -.375rem;
+}
+
+.ham-label {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  display: block;
+  /* xxx yyy -> 空格代表後代, xxx 的後代 yyy  */
+}
+
+.ham-label .line {
+  background-color: #262626;
+  width: 80%;
+  height: 2px;
+  border-radius: 8px;
+
+  /* position 置中 */
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.ham-label .line-1 {
+  top: 25%;
+}
+
+.ham-label .line-2 {
+  top: 50%;
+}
+
+.ham-label .line-3 {
+  top: 75%;
+}
+
+/* 移到正中心 -> 旋轉角度 */
+#ham-btn-switch:checked+label .line-1 {
+  top: 50%;
+  /* 要加translate(-50%, -50%)原因為 ".ham-label .line" 有加了 "transform: translate(-50%, -50%)" 會直接被覆蓋, 所以不能直接寫 transform: rotate(45deg) */
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+/* checkbox 被按下去 -> 第一個兄弟 "+" -> .line-2 -> 消失 */
+#ham-btn-switch:checked+label .line-2 {
+  display: none;
+}
+
+/* 移到正中心 -> 旋轉角度 */
+#ham-btn-switch:checked+label .line-3 {
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+/* 開啟 下拉選單 選單 */
+#ham-btn-switch:checked~.drop-down-menu,
+#software-switch-btn:checked~.drop-down-sub-menu,
+#devices-switch-btn:checked~.drop-down-sub-menu,
+#fun-switch-btn:checked~.drop-down-sub-menu,
+#business-switch-btn:checked~.drop-down-sub-menu,
+#it-switch-btn:checked~.drop-down-sub-menu,
+#other-switch-btn:checked~.drop-down-sub-menu {
+  display: block;
+}
+
+/* 開啟 "軟題" 選單後 -> 改變箭頭方向  */
+#software-switch-btn:checked~.drop-down-btn i,
+#devices-switch-btn:checked~.drop-down-btn i,
+#fun-switch-btn:checked~.drop-down-btn i,
+#business-switch-btn:checked~.drop-down-btn i,
+#it-switch-btn:checked~.drop-down-btn i,
+#other-switch-btn:checked~.drop-down-btn i {
+  transform: rotate(-180deg);
+}
+
+@media (max-width: 859px) {
+  nav .mobile-menu {
+    display: block;
+  }
+
+  .ham-btn {
+    display: block;
+  }
+
+}

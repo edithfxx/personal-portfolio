@@ -1,0 +1,753 @@
+/* ============ 初始設定 ============ */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", SegoeUI, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #000;
+}
+
+/* ============ 共用樣式 ============ */
+h1 {
+  font-size: 2.3125rem;
+  padding: unset;
+  margin: unset;
+  margin-bottom: 1.25rem;
+}
+
+h2 {
+  font-size: 1.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+
+  padding: unset;
+  margin: unset;
+  margin-bottom: 1rem;
+}
+
+img {
+  vertical-align: bottom;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.container-normal {
+  width: 90%;
+  margin: auto;
+  max-width: 1600px;
+}
+
+.container-full {
+  width: 100%;
+  margin: auto;
+  max-width: 1920px;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.text-gray {
+  color: #616161;
+}
+
+.horizon-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.horizon-nav ul {
+  display: flex;
+}
+
+
+/* ============ 客製化樣式: nav ============ */
+nav.container-normal {
+  margin-bottom: 2px;
+}
+
+nav.container-normal,
+nav li a,
+nav li .link-black-btn {
+  /* nav 共用 高度 樣式 */
+  height: 54px;
+}
+
+nav .pc-menu {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* more 按鈕 & 所有 Microsoft 按鈕 */
+nav .pc-menu .more-btn-box {
+  position: relative;
+}
+
+nav .pc-menu .more-btn-box .drop-down-sub-menu,
+nav .pc-menu .all-btn-box .drop-down-sub-menu {
+  background-color: #f2f2f2;
+  border-bottom: 2px solid black;
+
+  width: 95%;
+  max-width: 1070px;
+
+  position: absolute;
+  top: calc(54px + 2px);
+  z-index: 10;
+}
+
+nav .pc-menu .more-btn-box .drop-down-sub-menu {
+  min-width: 195px;
+  left: 0;
+}
+
+nav .pc-menu .all-btn-box .drop-down-sub-menu {
+  right: 0;
+}
+
+nav .pc-menu .all-btn-box .drop-down-sub-menu-card {
+  padding: 10px 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px
+}
+
+nav .pc-menu .all-btn-box .drop-down-sub-menu-card ul {
+  /* flex: 0 0 calc(100% / 4 - 24px); */
+  flex-direction: column;
+}
+
+nav .pc-menu .all-btn-box .drop-down-sub-menu-card h3,
+nav .pc-menu .all-btn-box .drop-down-sub-menu-card li a {
+  margin: unset;
+  padding: 12px;
+  height: auto;
+  font-size: 13px;
+}
+
+/* 預設 -> 隱藏 more 按鈕 & 所有 Microsoft 按鈕 */
+nav .pc-menu .more-btn-box,
+nav .pc-menu .more-btn-box .drop-down-sub-menu,
+nav .pc-menu .all-btn-box .drop-down-sub-menu,
+nav .pc-menu .more-btn-box .drop-down-sub-menu .sub-support,
+nav .pc-menu .more-btn-box .drop-down-sub-menu .sub-xbox,
+nav .pc-menu .more-btn-box .drop-down-sub-menu .sub-surface {
+  display: none;
+}
+
+nav .pc-menu .more-btn-box .drop-down-sub-menu a,
+nav .pc-menu .all-btn-box .drop-down-sub-menu a {
+  justify-content: flex-start;
+}
+
+#more-switch-btn:checked~.drop-down-sub-menu,
+#all-switch-btn:checked~.drop-down-sub-menu {
+  display: block;
+}
+
+nav li a,
+nav li .link-black-btn {
+  padding: 0 10px;
+  font-size: 13px;
+  color: #262626;
+
+  /* 置中 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+nav li a,
+nav li.search .link-black-btn,
+nav li.shoping-cart .link-black-btn {
+  /* nav 共用 gap 樣式 */
+  gap: 4px;
+}
+
+nav li.logo .link-blue-btn:focus {
+  outline-offset: -1px;
+}
+
+nav li.logo img {
+  width: 108px;
+  height: 23px;
+}
+
+nav li.search img,
+nav li.shoping-cart img {
+  width: 16px;
+}
+
+nav li .signin-btn.link-black-btn {
+  border-radius: 50%;
+}
+
+nav li .signin-btn.link-black-btn:focus {
+  outline-offset: -9px;
+}
+
+nav li .signin-btn .me {
+  width: 36px;
+  height: 36px;
+  border: 1px solid #262626;
+  border-radius: 50%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+/* ============ 客製化樣式: header ============ */
+header.container-full {
+  width: 100%;
+  margin-bottom: 4rem;
+}
+
+header.container-full .picture-box {
+  width: 100%;
+  position: relative;
+}
+
+header.container-full .picture-box .text {
+  max-width: 525px;
+  width: 100%;
+  padding: 48px;
+  position: absolute;
+  left: 5%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+header.container-full .picture-box .text-content {
+  margin-bottom: 1.5rem;
+}
+
+header.container-full .tools-bar {
+  padding-top: 18px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+header.container-full .tools-bar i {
+  margin: 12px;
+}
+
+
+/* ============ 客製化樣式: main  ============ */
+main {
+  width: 100%;
+}
+
+main .three-choice {
+  margin-bottom: 4rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+main .three-choice .one-choice {
+  height: 72px;
+  margin: 1rem 1.5rem;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+main .three-choice .one-choice img {
+  width: 40px;
+  margin-bottom: 0.5rem;
+}
+
+main .four-card {
+  width: 100%;
+  margin-bottom: 3rem;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  /* gap 不會被壓縮 */
+  gap: 24px;
+}
+
+main .four-card .one-card {
+  box-shadow: 0 0.1875rem 0.4375rem 0 rgba(0, 0, 0, 0.13), 0 0.0625rem 0.125rem 0 rgba(0, 0, 0, 0.11);
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+
+  /* 並排4張卡片平分，扣除 gap */
+  flex: 0 0 calc(100% / 4 - 24px);
+}
+
+main .four-card .one-card .one-card-body {
+  position: relative;
+  flex: 1 1 auto;
+}
+
+main .four-card .one-card .one-card-body,
+main .four-card .one-card .one-card-footer {
+  /* 共用 padding */
+  padding: 24px;
+}
+
+main .four-card .one-card .one-card-footer {
+  /* 移除重疊的padding */
+  padding-top: 0;
+}
+
+main .four-card .one-card .one-card-footer .surface-laptop-btn {
+  margin-top: .5rem;
+  padding: 10px 0;
+  padding-left: unset;
+}
+
+main .four-card .one-card .one-card-footer .surface-laptop-btn:focus {
+  outline-offset: unset;
+}
+
+main .big-img {
+  width: 100%;
+  margin-bottom: 6rem;
+
+  position: relative;
+}
+
+main .big-img .microsoft-edge-card {
+  display: flex;
+  padding: 0 5%;
+  width: 100%;
+
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+main .big-img .microsoft-edge {
+  width: 41.66667%;
+  padding: 3rem;
+
+  background-color: #fff;
+  color: #000;
+  box-shadow: 0 .1875rem .4375rem 0 rgba(0, 0, 0, .13), 0 .0625rem .125rem 0 rgba(0, 0, 0, .11);
+
+}
+
+main .big-img .microsoft-edge .blue-btn {
+  margin-top: 1.5rem;
+}
+
+main .others {
+  width: 100%;
+  margin-bottom: 3rem;
+}
+
+main .others ul {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+main .others ul a {
+  display: inline-block;
+}
+
+main .others ul a.link-blue-btn:focus {
+  outline-offset: 1px;
+}
+
+main .others ul a img {
+  width: 32px;
+}
+
+main .others .company-number {
+  margin-top: 3rem;
+}
+
+
+/* ============ 客製化樣式: footer  ============ */
+footer {
+  background-color: #f2f2f2;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 5%;
+}
+
+footer h3 {
+  margin: 0;
+  font-size: 15px;
+  line-height: 20px;
+  padding: 36px 0 4px;
+}
+
+footer a {
+  text-decoration: none;
+}
+
+footer .footer-menu {
+  max-width: calc(1600px + 10%);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+footer .footer-menu li {
+  padding: 8px 0;
+}
+
+footer .horizon-nav {
+  max-width: calc(1600px + 10%);
+  padding: 30px 0;
+  gap: 12px;
+}
+
+footer .horizon-nav ul {
+  gap: 12px;
+  align-items: center;
+}
+
+footer .horizon-nav li {
+  padding: 0 24px 4px 0;
+}
+
+footer .horizon-nav ul.language li a.earth-americas {
+  height: 30px;
+  display: flex;
+  align-items: center;
+}
+
+footer .horizon-nav ul.language li a i {
+  font-size: 20px;
+  color: #616161;
+}
+
+footer .horizon-nav ul.language li a .vector-img {
+  height: 16px;
+}
+
+footer .footer-menu li,
+footer .horizon-nav li {
+  font-size: 11px;
+}
+
+/* 滾動 go-top 變置底 */
+.go-top {
+  text-align: right;
+  margin-bottom: .75rem;
+
+  /* 啟用黏性定位 */
+  position: sticky;
+  padding: 0 .75rem;
+
+  /* 當滾到距離底部 20px 時，固定住 */
+  bottom: .75rem;
+}
+
+.go-top>a {
+  background-color: #D9D9D9;
+  color: black;
+  font-weight: 600;
+  padding: 10px 12px;
+  display: inline-block;
+}
+
+.go-top>a:hover {
+  background-color: white;
+  box-shadow: 0 .125rem .25rem 0 rgba(0, 0, 0, .13), 0 0 .0625rem 0 rgba(0, 0, 0, .11);
+}
+
+.go-top>a.link-black-btn:hover span {
+  border: none;
+}
+
+@media (max-width: 1400px) {
+
+  /* ============ 共用樣式 ============ */
+  h1 {
+    font-size: 1.8125rem;
+    margin-bottom: 1rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    margin-bottom: .75rem;
+  }
+
+  /* ============ 客製化樣式: nav ============ */
+  nav li.search span,
+  nav li.shoping-cart span,
+  nav li .signin-btn span {
+    display: none;
+  }
+
+  nav li .signin-btn .me {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #262626;
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+@media (max-width: 1120px) {
+  nav .pc-menu .all-btn-box .drop-down-sub-menu {
+    right: unset;
+    left: 50%;
+    transform: translateX(-50%);
+
+  }
+}
+
+@media (max-width: 1084px) {
+
+  /* ============ 共用樣式 ============ */
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: .75rem;
+  }
+
+  h2 {
+    font-size: 1.3125rem;
+    margin-bottom: .5rem;
+  }
+
+
+  /* ============ 客製化樣式: header ============ */
+  header.container-full .picture-box {
+    /* 顯示 tools-bar */
+    margin-bottom: calc(247px - 50px);
+  }
+
+  header.container-full .picture-box .text {
+    margin: auto;
+    max-width: 97%;
+    height: 247px;
+
+    background-color: white;
+    box-shadow: 0 .1875rem .4375rem 0 rgba(0, 0, 0, .13), 0 .0625rem .125rem 0 rgba(0, 0, 0, .11);
+
+    left: 50%;
+    top: calc(100% - 50px);
+    transform: translateX(-50%);
+  }
+
+
+  /* ============ 客製化樣式: main  ============ */
+  main .four-card .one-card {
+    /* 並排2張卡片平分，扣除 gap */
+    flex: 0 0 calc(100% / 2 - 24px);
+  }
+
+  main .big-img {
+    /* 顯示 適用於商務 文字 */
+    margin-bottom: calc(240px - 50px);
+  }
+
+  main .big-img .microsoft-edge-card {
+    display: unset;
+    height: 240px;
+
+    left: 50%;
+    top: calc(100% - 50px);
+    transform: translateX(-50%);
+  }
+
+  main .big-img .microsoft-edge {
+    width: 100%;
+    height: 100%;
+  }
+
+
+  /* ============ 客製化樣式: footer  ============ */
+  footer {
+    padding: 0 24px;
+  }
+
+  footer .footer-menu {
+    gap: 24px;
+  }
+
+  footer .horizon-nav {
+    padding-bottom: 20px;
+  }
+
+  footer .footer-menu ul {
+    /* 並排 3 個 ul ，扣除 gap */
+    flex: 0 0 calc(100% / 3 - 24px);
+  }
+}
+
+@media (max-width: 969px) {
+
+  /* 隱藏 nav 的支援按鈕 */
+  nav .pc-menu li.support {
+    display: none;
+  }
+
+  /* 開啟 more 按鈕 及 下拉選單的 支援按鈕 */
+  nav .pc-menu .more-btn-box,
+  nav .pc-menu .more-btn-box .drop-down-sub-menu .sub-support {
+    display: block;
+  }
+}
+
+@media (max-width: 927px) {
+
+  /* 隱藏 nav 的 xbox按鈕 */
+  nav .pc-menu li.xbox {
+    display: none;
+  }
+
+  /* 開啟 下拉選單的 xbox按鈕 */
+  nav .pc-menu .more-btn-box .drop-down-sub-menu .sub-xbox {
+    display: block;
+  }
+}
+
+@media (max-width: 882px) {
+
+  /* 隱藏 nav 的 surface按鈕 */
+  nav .pc-menu li.surface {
+    display: none;
+  }
+
+  /* 開啟 下拉選單的 surface按鈕 */
+  nav .pc-menu .more-btn-box .drop-down-sub-menu .sub-surface {
+    display: block;
+  }
+}
+
+@media (max-width: 859px) {
+
+  /* ============ 共用樣式 ============ */
+  .container-normal {
+    width: 100%;
+    padding: 0 12px;
+  }
+
+  /* ============ 客製化樣式: nav ============ */
+  nav.container-normal {
+    display: flex;
+    align-items: center;
+  }
+
+  nav .pc-menu {
+    display: none;
+  }
+
+  /* ============ 客製化樣式: header ============ */
+  header.container-full .picture-box {
+    margin-bottom: unset;
+  }
+
+  header.container-full .picture-box .text {
+    margin: unset;
+    max-width: 100%;
+    height: auto;
+
+    position: relative;
+    left: unset;
+    top: unset;
+    transform: unset;
+
+    padding: 24px;
+  }
+
+  /* ============ 客製化樣式: main  ============ */
+  main .three-choice {
+    margin-bottom: 1rem;
+  }
+
+  main .four-card .one-card {
+
+    /* gap 不會被壓縮 */
+    gap: 12px;
+  }
+
+  main .four-card .one-card {
+    /* 並排2張卡片平分，扣除 gap */
+    flex: 0 0 calc(100% / 2 - 12px);
+  }
+
+  main .big-img {
+    margin-bottom: unset;
+    padding-bottom: 3rem;
+  }
+
+  main .big-img .microsoft-edge-card {
+    display: unset;
+    padding: unset;
+    height: auto;
+
+    position: relative;
+    left: unset;
+    top: unset;
+    transform: unset;
+  }
+
+  main .big-img .microsoft-edge {
+    padding: 3rem .75rem;
+    box-shadow: unset
+  }
+}
+
+@media (max-width: 767px) {
+  footer .horizon-nav {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  footer .horizon-nav ul {
+    flex-wrap: wrap;
+    gap: 6px 24px;
+  }
+
+  footer .horizon-nav {
+    gap: 14px;
+  }
+
+  footer .horizon-nav ul.language {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  footer .horizon-nav li {
+    padding: unset;
+  }
+}
+
+@media (max-width: 540px) {
+
+  /* ============ 客製化樣式: main  ============ */
+  main .four-card .one-card {
+    flex: 0 0 100%;
+  }
+
+  /* ============ 客製化樣式: footer  ============ */
+  footer .footer-menu {
+    flex-direction: column;
+  }
+}

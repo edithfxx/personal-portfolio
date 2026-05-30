@@ -1,0 +1,70 @@
+:root {
+    --link-black-color: #262626;
+    --outline-color: #262626;
+    --underline-color: #000000;
+}
+
+/* ============ 超連結按鈕 ============ */
+a {
+    text-decoration: none;
+    display: inline-block;
+
+    /* 因手機版選單有下拉選項，所以要加入 pointer */
+    cursor: pointer;
+}
+
+
+/* 黑框連結按鈕 */
+.link-black-btn span,
+.drop-down-btn span {
+    color: var(--link-black-color);
+}
+
+.link-black-btn:focus,
+.drop-down-btn:focus {
+    outline: .1875rem dotted var(--outline-color);
+    outline-offset: -.375rem;
+}
+
+.link-black-btn:hover span {
+    border-bottom: 2px solid var(--underline-color);
+}
+
+/* 灰框灰字連結按鈕 */
+.link-gray-btn span {
+    color: #616161;
+}
+
+.link-gray-btn:focus {
+    outline: .1875rem dotted #616161;
+    outline-offset: 2px;
+}
+
+.link-gray-btn:hover span {
+    border-bottom: 1px solid #616161;
+}
+
+/* 藍底白框按鈕 */
+.blue-btn {
+    background-color: #0067b8;
+    padding: 10px 12px;
+    color: white;
+}
+
+.blue-btn:focus {
+    outline: .1875rem dotted white;
+    outline-offset: -.375rem;
+}
+
+
+/* 藍框連結按鈕 */
+.link-blue-btn {
+    text-decoration: underline;
+    color: #0067b8;
+    font-weight: 600;
+}
+
+.link-blue-btn:focus {
+    outline: .1875rem dotted #0067b8;
+    outline-offset: 1px;
+}
