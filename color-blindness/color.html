@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>色覺の森 — 色弱小測驗</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Noto+Sans+TC:wght@400;500;700&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --cream: #FBF6E9;
+      --cream-deep: #F0E5C9;
+      --sky-top: #A8C8E0;
+      --sky-mid: #C9DCE8;
+      --sky-bot: #E8D5B7;
+      --moss: #7A9B6E;
+      --moss-deep: #5A7B4E;
+      --orange: #E8A87C;
+      --orange-deep: #C97D4F;
+      --slate: #6B8CAE;
+      --ink: #3E4A3D;
+      --ink-soft: #6B7563;
+      --red: #C76B5E;
+      --red-soft: #E8B5AE;
+      --gold: #D4A55E;
+      --shadow: rgba(62, 74, 61, 0.12);
+    }
+
+    html,
+    body {
+      height: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse at 20% 10%, rgba(255, 255, 255, 0.5) 0%, transparent 40%),
+        radial-gradient(ellipse at 80% 90%, rgba(255, 228, 181, 0.4) 0%, transparent 50%),
+        linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 45%, var(--sky-bot) 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* paper grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.85' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0.4 0 0 0 0 0.45 0 0 0 0 0.35 0 0 0 0.08 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: 1;
+      mix-blend-mode: multiply;
+    }
+
+    /* drifting clouds */
+    .cloud {
+      position: fixed;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.7;
+      filter: blur(0.5px);
+    }
+
+    .cloud-1 {
+      top: 8%;
+      left: -200px;
+      width: 180px;
+      animation: drift 90s linear infinite;
+    }
+
+    .cloud-2 {
+      top: 24%;
+      left: -150px;
+      width: 140px;
+      animation: drift 120s linear infinite;
+      animation-delay: -40s;
+    }
+
+    .cloud-3 {
+      top: 65%;
+      left: -180px;
+      width: 160px;
+      animation: drift 100s linear infinite;
+      animation-delay: -70s;
+      opacity: 0.5;
+    }
+
+    @keyframes drift {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(calc(100vw + 250px));
+      }
+    }
+
+    /* falling leaves */
+    .leaf {
+      position: fixed;
+      top: -30px;
+      pointer-events: none;
+      z-index: 0;
+      width: 22px;
+      animation: fall 18s linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 0.8;
+      }
+
+      90% {
+        opacity: 0.8;
+      }
+
+      100% {
+        transform: translateY(110vh) translateX(80px) rotate(540deg);
+        opacity: 0;
+      }
+    }
+
+    .stage {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 540px;
+    }
+
+    .panel {
+      background: var(--cream);
+      border-radius: 24px;
+      padding: 32px 28px;
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.7) inset,
+        0 4px 0 var(--cream-deep),
+        0 12px 24px var(--shadow),
+        0 24px 48px rgba(62, 74, 61, 0.08);
+      border: 1.5px solid rgba(122, 155, 110, 0.2);
+      position: relative;
+    }
+
+    .panel::before {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 1px dashed rgba(122, 155, 110, 0.3);
+      border-radius: 18px;
+      pointer-events: none;
+    }
+
+    /* ============ INTRO ============ */
+    .intro {
+      text-align: center;
+    }
+
+    .intro-decor {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .title {
+      font-family: 'Klee One', 'Noto Sans TC', serif;
+      font-weight: 600;
+      font-size: clamp(28px, 6vw, 36px);
+      color: var(--moss-deep);
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-family: 'Klee One', serif;
+      color: var(--ink-soft);
+      font-size: 14px;
+      letter-spacing: 0.15em;
+      margin-bottom: 24px;
+    }
+
+    .rules {
+      background: rgba(122, 155, 110, 0.08);
+      border-left: 3px solid var(--moss);
+      border-radius: 12px;
+      padding: 16px 18px;
+      text-align: left;
+      margin-bottom: 22px;
+      font-size: 14px;
+      line-height: 1.9;
+      color: var(--ink);
+    }
+
+    .rules-title {
+      font-family: 'Klee One', serif;
+      font-weight: 600;
+      color: var(--moss-deep);
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    .rules ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .rules li::before {
+      content: '◆';
+      color: var(--orange);
+      margin-right: 8px;
+      font-size: 10px;
+      vertical-align: middle;
+    }
+
+    .tip {
+      font-size: 12px;
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .btn {
+      font-family: 'Klee One', 'Noto Sans TC', sans-serif;
+      font-weight: 600;
+      font-size: 17px;
+      letter-spacing: 0.08em;
+      color: var(--cream);
+      background: var(--moss);
+      border: none;
+      padding: 14px 36px;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 4px 0 var(--moss-deep), 0 8px 16px rgba(90, 123, 78, 0.25);
+      transition: transform 0.1s, box-shadow 0.1s;
+      position: relative;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 5px 0 var(--moss-deep), 0 10px 20px rgba(90, 123, 78, 0.3);
+    }
+
+    .btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 var(--moss-deep), 0 2px 8px rgba(90, 123, 78, 0.2);
+    }
+
+    .btn-secondary {
+      background: var(--cream);
+      color: var(--moss-deep);
+      box-shadow: 0 4px 0 var(--cream-deep), 0 8px 16px rgba(62, 74, 61, 0.1);
+      border: 1.5px solid rgba(122, 155, 110, 0.3);
+    }
+
+    .btn-secondary:hover {
+      box-shadow: 0 5px 0 var(--cream-deep), 0 10px 20px rgba(62, 74, 61, 0.15);
+    }
+
+    .btn-secondary:active {
+      box-shadow: 0 1px 0 var(--cream-deep), 0 2px 8px rgba(62, 74, 61, 0.08);
+    }
+
+    /* sound toggle */
+    .sound-toggle {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(122, 155, 110, 0.3);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 5;
+      transition: background 0.15s;
+    }
+
+    .sound-toggle:hover {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .sound-toggle svg {
+      width: 18px;
+      height: 18px;
+      color: var(--moss-deep);
+    }
+
+    /* 音效不支援時顯示的狀態 */
+    .sound-toggle.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    /* Toast 提示（手機點擊時顯示） */
+    .toast {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--cream);
+      color: var(--ink);
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-family: 'Klee One', serif;
+      box-shadow: 0 4px 0 var(--cream-deep), 0 12px 24px var(--shadow);
+      border: 1.5px solid rgba(122, 155, 110, 0.3);
+      z-index: 100;
+      animation: toastFade 1.8s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes toastFade {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -40%);
+      }
+
+      15% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+
+      80% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -60%);
+      }
+    }
+
+
+
+    /* ============ GAME ============ */
+    .hud {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 22px;
+      padding-bottom: 16px;
+      border-bottom: 1px dashed rgba(122, 155, 110, 0.3);
+    }
+
+    .hud-cell {
+      text-align: center;
+    }
+
+    .hud-cell.left {
+      text-align: left;
+    }
+
+    .hud-cell.right {
+      text-align: right;
+    }
+
+    .hud-label {
+      font-family: 'Klee One', serif;
+      font-size: 11px;
+      color: var(--ink-soft);
+      letter-spacing: 0.1em;
+      margin-bottom: 2px;
+    }
+
+    .hud-value {
+      font-family: 'Klee One', serif;
+      font-weight: 600;
+      font-size: 22px;
+      color: var(--moss-deep);
+      line-height: 1;
+    }
+
+    .timer-ring {
+      width: 64px;
+      height: 64px;
+      position: relative;
+    }
+
+    .timer-ring svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .timer-ring .ring-bg {
+      fill: none;
+      stroke: rgba(122, 155, 110, 0.2);
+      stroke-width: 5;
+    }
+
+    .timer-ring .ring-fg {
+      fill: none;
+      stroke: var(--moss);
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-dasharray: 169.65;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 1s linear, stroke 0.3s;
+    }
+
+    .timer-ring.warning .ring-fg {
+      stroke: var(--orange-deep);
+    }
+
+    .timer-ring.danger .ring-fg {
+      stroke: var(--red);
+    }
+
+    .timer-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Klee One', serif;
+      font-weight: 600;
+      font-size: 20px;
+      color: var(--moss-deep);
+    }
+
+    .timer-ring.danger .timer-text {
+      color: var(--red);
+    }
+
+    .level-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-family: 'Klee One', serif;
+      letter-spacing: 0.05em;
+      background: rgba(232, 168, 124, 0.2);
+      color: var(--orange-deep);
+      margin-bottom: 4px;
+    }
+
+    .grid-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      aspect-ratio: 1;
+      width: 100%;
+      max-width: 380px;
+      margin: 0 auto;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.45);
+      border-radius: 20px;
+      border: 1px solid rgba(122, 155, 110, 0.2);
+      box-shadow: inset 0 2px 8px rgba(62, 74, 61, 0.06);
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .grid-wrap.shake {
+      animation: shake 0.3s;
+    }
+
+    .grid-wrap.flash-red {
+      background: rgba(199, 107, 94, 0.2);
+    }
+
+    .grid-wrap.flash-green {
+      background: rgba(122, 155, 110, 0.25);
+    }
+
+    @keyframes shake {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      20% {
+        transform: translateX(-6px);
+      }
+
+      40% {
+        transform: translateX(6px);
+      }
+
+      60% {
+        transform: translateX(-4px);
+      }
+
+      80% {
+        transform: translateX(4px);
+      }
+    }
+
+    .grid {
+      display: grid;
+      width: 100%;
+      height: 100%;
+      gap: 6px;
+    }
+
+    .cell {
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.12s ease;
+      box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      position: relative;
+    }
+
+    .cell:active {
+      transform: scale(0.92);
+    }
+
+    .cell.correct {
+      animation: pop 0.4s ease-out;
+    }
+
+    @keyframes pop {
+      0% {
+        transform: scale(1);
+        box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.08), 0 0 0 0 rgba(212, 165, 94, 0.6);
+      }
+
+      50% {
+        transform: scale(1.25);
+        box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.08), 0 0 0 12px rgba(212, 165, 94, 0);
+      }
+
+      100% {
+        transform: scale(1);
+        box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.08);
+      }
+    }
+
+    .game-footer {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+
+    /* ============ RESULT ============ */
+    .result {
+      text-align: center;
+    }
+
+    .result-medal {
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 12px;
+    }
+
+    .result-title {
+      font-family: 'Klee One', serif;
+      font-weight: 600;
+      font-size: 26px;
+      color: var(--moss-deep);
+      margin-bottom: 4px;
+    }
+
+    .result-comment {
+      font-family: 'Klee One', serif;
+      font-size: 14px;
+      color: var(--orange-deep);
+      margin-bottom: 22px;
+      line-height: 1.7;
+      padding: 0 8px;
+    }
+
+    .result-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    .stat-box {
+      background: rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(122, 155, 110, 0.2);
+      border-radius: 14px;
+      padding: 14px 8px;
+    }
+
+    .stat-num {
+      font-family: 'Klee One', serif;
+      font-weight: 600;
+      font-size: 26px;
+      color: var(--moss-deep);
+      line-height: 1.1;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--ink-soft);
+      margin-top: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    .result-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ============ RWD ============ */
+    @media (max-width: 480px) {
+      .panel {
+        padding: 24px 18px;
+        border-radius: 20px;
+      }
+
+      .title {
+        font-size: 26px;
+      }
+
+      .subtitle {
+        font-size: 12px;
+        margin-bottom: 18px;
+      }
+
+      .rules {
+        font-size: 13px;
+        padding: 12px 14px;
+      }
+
+      .grid-wrap {
+        max-width: 100%;
+        padding: 10px;
+      }
+
+      .hud-value {
+        font-size: 18px;
+      }
+
+      .timer-ring {
+        width: 56px;
+        height: 56px;
+      }
+
+      .timer-text {
+        font-size: 18px;
+      }
+
+      .result-stats {
+        gap: 6px;
+      }
+
+      .stat-num {
+        font-size: 22px;
+      }
+
+      .btn {
+        font-size: 15px;
+        padding: 12px 28px;
+      }
+
+      .grid {
+        gap: 4px;
+      }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* fade transitions */
+    .fade-in {
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 雲朵 -->
+  <svg class="cloud cloud-1" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="50" cy="50" rx="40" ry="22" fill="white" />
+    <ellipse cx="90" cy="40" rx="48" ry="28" fill="white" />
+    <ellipse cx="140" cy="48" rx="42" ry="24" fill="white" />
+    <ellipse cx="100" cy="55" rx="55" ry="20" fill="white" />
+  </svg>
+  <svg class="cloud cloud-2" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="50" cy="50" rx="36" ry="20" fill="white" />
+    <ellipse cx="90" cy="42" rx="44" ry="26" fill="white" />
+    <ellipse cx="140" cy="50" rx="38" ry="22" fill="white" />
+  </svg>
+  <svg class="cloud cloud-3" viewBox="0 0 200 80" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="60" cy="48" rx="42" ry="22" fill="white" />
+    <ellipse cx="110" cy="42" rx="48" ry="26" fill="white" />
+    <ellipse cx="150" cy="50" rx="36" ry="20" fill="white" />
+  </svg>
+
+  <div class="stage">
+    <!-- ========= 開始畫面 ========= -->
+    <div class="panel intro fade-in" id="screen-intro">
+      <button class="sound-toggle" id="soundToggle" aria-label="音效開關" title="音效開關">
+        <svg id="soundOnIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+        </svg>
+        <svg id="soundOffIcon" class="hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <line x1="23" y1="9" x2="17" y2="15"></line>
+          <line x1="17" y1="9" x2="23" y2="15"></line>
+        </svg>
+      </button>
+
+      <div class="intro-decor">
+        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+          <!-- 葉子裝飾 -->
+          <path d="M32 8 C 18 18, 14 36, 32 56 C 50 36, 46 18, 32 8 Z" fill="#7A9B6E" opacity="0.85" />
+          <path d="M32 14 L 32 52" stroke="#5A7B4E" stroke-width="1.5" stroke-linecap="round" />
+          <path d="M32 22 Q 26 26, 22 32" stroke="#5A7B4E" stroke-width="1" fill="none" stroke-linecap="round" />
+          <path d="M32 22 Q 38 26, 42 32" stroke="#5A7B4E" stroke-width="1" fill="none" stroke-linecap="round" />
+          <path d="M32 32 Q 26 36, 22 42" stroke="#5A7B4E" stroke-width="1" fill="none" stroke-linecap="round" />
+          <path d="M32 32 Q 38 36, 42 42" stroke="#5A7B4E" stroke-width="1" fill="none" stroke-linecap="round" />
+          <circle cx="46" cy="20" r="3" fill="#E8A87C" />
+        </svg>
+      </div>
+      <h1 class="title">色覺の森</h1>
+      <p class="subtitle">— 找出與眾不同的那一塊 —</p>
+
+      <div class="rules">
+        <div class="rules-title">遊戲規則</div>
+        <ul>
+          <li>限時 60 秒，找出顏色不同的方塊</li>
+          <li>答對加分，難度逐漸提升</li>
+          <li>答錯不扣分，但畫面會晃一下</li>
+          <li>挑戰你能答對幾題！</li>
+        </ul>
+      </div>
+
+      <p class="tip">※ 此測驗僅供娛樂，正式色覺檢查請尋求眼科醫師。<br>建議於光線充足、螢幕亮度適中的環境進行。</p>
+
+      <button class="btn" id="btnStart">開始旅程</button>
+    </div>
+
+    <!-- ========= 遊戲畫面 ========= -->
+    <div class="panel hidden" id="screen-game">
+      <div class="hud">
+        <div class="hud-cell left">
+          <div class="hud-label">關卡</div>
+          <div class="hud-value" id="levelDisplay">1</div>
+        </div>
+        <div class="timer-ring" id="timerRing">
+          <svg viewBox="0 0 64 64">
+            <circle class="ring-bg" cx="32" cy="32" r="27" />
+            <circle class="ring-fg" cx="32" cy="32" r="27" id="ringFg" />
+          </svg>
+          <div class="timer-text" id="timerText">60</div>
+        </div>
+        <div class="hud-cell right">
+          <div class="hud-label">答對</div>
+          <div class="hud-value" id="scoreDisplay">0</div>
+        </div>
+      </div>
+
+      <div class="grid-wrap" id="gridWrap">
+        <div class="grid" id="grid"></div>
+      </div>
+
+      <div class="game-footer" id="diffHint">煤炭精靈在看著你…</div>
+    </div>
+
+    <!-- ========= 結算畫面 ========= -->
+    <div class="panel result hidden" id="screen-result">
+      <svg class="result-medal" viewBox="0 0 88 88" xmlns="http://www.w3.org/2000/svg" id="medalSvg">
+        <!-- 獎章 (動態替換) -->
+      </svg>
+      <h2 class="result-title" id="resultTitle">時間到！</h2>
+      <p class="result-comment" id="resultComment"></p>
+
+      <div class="result-stats">
+        <div class="stat-box">
+          <div class="stat-num" id="finalScore">0</div>
+          <div class="stat-label">答對題數</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="finalLevel">1</div>
+          <div class="stat-label">最高關卡</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="finalAccuracy">0%</div>
+          <div class="stat-label">正確率</div>
+        </div>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn" id="btnRetry">再玩一次</button>
+        <button class="btn btn-secondary" id="btnHome">回首頁</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./script/color.js"></script>
+</body>
+
+</html>
