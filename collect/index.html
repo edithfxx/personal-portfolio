@@ -1,0 +1,756 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Paranormal Archive ｜ 靈異檔案庫</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;700&family=Noto+Serif+TC:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <!-- 雜訊 / 掃描線 overlay -->
+    <div class="overlay-noise" aria-hidden="true"></div>
+    <div class="overlay-scanlines" aria-hidden="true"></div>
+
+    <div id="app" v-cloak>
+      <!-- ============== HEADER ============== -->
+      <header class="site-header" role="banner">
+        <div class="header-meta" aria-hidden="true">
+          <span class="rec-dot"></span>
+          <span class="meta-text">REC ● CLASSIFIED</span>
+          <span class="meta-text">{{ currentTime }}</span>
+        </div>
+        <h1 class="site-title">
+          <span class="title-eyebrow">— DOSSIER N° 0451 —</span>
+          <span class="title-main">Paranormal Archive</span>
+          <span class="title-sub">靈 異 檔 案 庫</span>
+        </h1>
+        <p class="site-desc">
+          本資料庫收錄各類無法以科學手段解釋之現象紀錄。<br />
+          所有條目皆為調查員整理彙編。閱讀者責任自負。
+        </p>
+      </header>
+
+      <main class="layout">
+        <!-- ============== LEFT: FORM ============== -->
+        <section class="panel form-panel" aria-labelledby="form-title">
+          <div class="panel-header">
+            <h2 id="form-title" class="panel-title">
+              <span class="panel-num">01</span>
+              新增調查紀錄
+            </h2>
+            <span class="panel-badge" aria-hidden="true">NEW ENTRY</span>
+          </div>
+
+          <form class="form" @submit.prevent="addItem" novalidate>
+            <!-- 名稱 -->
+            <div class="field">
+              <label for="f-name" class="field-label">
+                現象名稱 <span class="req" aria-hidden="true">*</span>
+              </label>
+              <input
+                id="f-name"
+                v-model.trim="form.name"
+                type="text"
+                :maxlength="LIMITS.NAME_MAX"
+                class="input"
+                :class="{ 'is-error': errors.name }"
+                :aria-invalid="!!errors.name"
+                aria-describedby="err-name"
+                placeholder="例如：百慕達三角洲"
+                autocomplete="off"
+              />
+              <p id="err-name" class="error-msg" v-if="errors.name">
+                {{ errors.name }}
+              </p>
+            </div>
+
+            <!-- 分類 -->
+            <div class="field">
+              <label for="f-category" class="field-label">
+                現象分類 <span class="req" aria-hidden="true">*</span>
+              </label>
+              <select
+                id="f-category"
+                v-model="form.category"
+                class="input"
+                :class="{ 'is-error': errors.category }"
+                :aria-invalid="!!errors.category"
+                aria-describedby="err-category"
+              >
+                <option value="">— 請選擇分類 —</option>
+                <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+                  {{ cat.icon }} {{ cat.name }}
+                </option>
+              </select>
+              <p id="err-category" class="error-msg" v-if="errors.category">
+                {{ errors.category }}
+              </p>
+            </div>
+
+            <!-- 圖片 -->
+            <div class="field">
+              <label for="f-image" class="field-label">證據影像網址</label>
+              <input
+                id="f-image"
+                v-model.trim="form.image"
+                type="url"
+                class="input"
+                placeholder="https://... （可留空，將顯示無影像紀錄）"
+                autocomplete="off"
+              />
+            </div>
+
+            <!-- 簡介 -->
+            <div class="field">
+              <label for="f-desc" class="field-label">
+                調查摘要 <span class="req" aria-hidden="true">*</span>
+              </label>
+              <textarea
+                id="f-desc"
+                v-model.trim="form.description"
+                class="input textarea"
+                :class="{ 'is-error': errors.description }"
+                :aria-invalid="!!errors.description"
+                aria-describedby="err-desc desc-count"
+                :maxlength="LIMITS.DESC_MAX"
+                :placeholder="`請以不超過 ${LIMITS.DESC_MAX} 字描述此現象...`"
+                rows="3"
+              ></textarea>
+              <div class="textarea-meta">
+                <p id="err-desc" class="error-msg" v-if="errors.description">
+                  {{ errors.description }}
+                </p>
+                <span
+                  id="desc-count"
+                  class="char-count"
+                  :class="{ near: form.description.length > LIMITS.DESC_NEAR }"
+                >
+                  {{ form.description.length }} / {{ LIMITS.DESC_MAX }}
+                </span>
+              </div>
+            </div>
+
+            <!-- 推薦程度 -->
+            <div class="field">
+              <span class="field-label" id="rating-label">
+                恐怖指數 / 推薦程度
+              </span>
+              <div
+                class="rating-input"
+                role="radiogroup"
+                aria-labelledby="rating-label"
+                @keydown="onRatingKey"
+              >
+                <button
+                  v-for="n in 5"
+                  :key="n"
+                  type="button"
+                  role="radio"
+                  :aria-checked="form.rating === n"
+                  :tabindex="form.rating === n || (form.rating === 0 && n === 1) ? 0 : -1"
+                  class="star-btn"
+                  :class="{ filled: n <= form.rating }"
+                  :aria-label="`${n} 顆星`"
+                  @click="form.rating = n"
+                >
+                  ★
+                </button>
+                <span class="rating-text">{{ form.rating }} / 5</span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              <span class="btn-icon" aria-hidden="true">▸</span>
+              歸 檔
+            </button>
+          </form>
+        </section>
+
+        <!-- ============== RIGHT: STATS + LIST ============== -->
+        <div class="right-col">
+          <!-- 統計資訊 -->
+          <section class="panel stats-panel" aria-labelledby="stats-title">
+            <h2 id="stats-title" class="visually-hidden">統計資訊</h2>
+            <div class="stat-item">
+              <div class="stat-label">檔案總數</div>
+              <div class="stat-value">
+                <span class="stat-num">
+                  {{ String(items.length).padStart(3, '0') }}
+                </span>
+                <span class="stat-unit">FILES</span>
+              </div>
+            </div>
+            <div class="stat-divider" aria-hidden="true"></div>
+            <div class="stat-item">
+              <div class="stat-label">平均恐怖指數</div>
+              <div class="stat-value">
+                <span class="stat-num">{{ avgRating }}</span>
+                <span class="stat-unit">/ 5.0</span>
+              </div>
+            </div>
+            <div class="stat-divider" aria-hidden="true"></div>
+            <div class="stat-item">
+              <div class="stat-label">高危險檔案</div>
+              <div class="stat-value">
+                <span class="stat-num danger">{{ highRiskCount }}</span>
+                <span class="stat-unit">★≥{{ LIMITS.HIGH_RISK_RATING }}</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- 篩選 -->
+          <section class="panel filter-panel" aria-labelledby="filter-title">
+            <div class="panel-header">
+              <h2 id="filter-title" class="panel-title">
+                <span class="panel-num">02</span>
+                檔案分類索引
+              </h2>
+            </div>
+            <div class="filter-bar" role="tablist" aria-label="分類篩選">
+              <button
+                type="button"
+                role="tab"
+                class="filter-btn"
+                :aria-selected="activeCategory === 'all'"
+                :class="{ active: activeCategory === 'all' }"
+                @click="activeCategory = 'all'"
+              >
+                全部 <span class="filter-count">{{ items.length }}</span>
+              </button>
+              <button
+                v-for="cat in categoriesWithCount"
+                type="button"
+                role="tab"
+                class="filter-btn"
+                :key="cat.id"
+                :aria-selected="activeCategory === cat.id"
+                :class="{ active: activeCategory === cat.id }"
+                @click="activeCategory = cat.id"
+              >
+                <span aria-hidden="true">{{ cat.icon }}</span>
+                {{ cat.name }}
+                <span class="filter-count">{{ cat.count }}</span>
+              </button>
+            </div>
+          </section>
+
+          <!-- 列表 -->
+          <section class="panel list-panel" aria-labelledby="list-title">
+            <div class="panel-header">
+              <h2 id="list-title" class="panel-title">
+                <span class="panel-num">03</span>
+                檔案列表
+                <span class="result-text" aria-live="polite">
+                  顯示 {{ filteredItems.length }} 筆
+                </span>
+              </h2>
+            </div>
+
+            <!-- 空狀態 -->
+            <div
+              v-if="filteredItems.length === 0"
+              class="empty-state"
+              role="status"
+            >
+              <div class="empty-icon" aria-hidden="true">
+                <div class="folder-icon">📁</div>
+                <div class="empty-scan"></div>
+              </div>
+              <p class="empty-title">— 檔案庫尚無紀錄 —</p>
+              <p class="empty-desc">
+                {{ items.length === 0 ? '等待你的第一份調查報告...' :
+                '此分類下沒有相符的檔案，請切換其他分類。' }}
+              </p>
+            </div>
+
+            <!-- 卡片網格 -->
+            <div v-else class="card-grid">
+              <article
+                v-for="(item, idx) in filteredItems"
+                class="card"
+                :key="item.id"
+                :class="{ 'card-elite': item.rating === 5 }"
+                :style="{ animationDelay: (idx * 60) + 'ms' }"
+              >
+                <!-- 卡片頂端條 -->
+                <div class="card-topbar" aria-hidden="true">
+                  <span class="card-no">
+                    № {{ String(item.id).padStart(4, '0') }}
+                  </span>
+                  <span class="card-rec">
+                    <span class="rec-dot small"></span> REC
+                  </span>
+                </div>
+
+                <!-- 圖片 -->
+                <div class="card-img-wrap">
+                  <!-- HTML -> loading="lazy" -> 延遲載入，圖片滾動到接近視窗時才下載 -->
+                  <!-- Vue -> @error -> 圖片載入失敗，顯示預設圖片 -->
+                  <img
+                    v-if="item.image && !item.imgError"
+                    class="card-img"
+                    loading="lazy"
+                    :src="item.image"
+                    :alt="`${item.name} 證據影像`"
+                    @error="item.imgError = true"
+                  />
+                  <div
+                    v-else
+                    class="card-img no-img"
+                    role="img"
+                    :aria-label="`${item.name} 無影像紀錄`"
+                  >
+                    <div class="no-img-text">
+                      <div>NO VISUAL</div>
+                      <div>RECORD</div>
+                    </div>
+                  </div>
+
+                  <span class="card-cat-tag">
+                    {{ getCategoryIcon(item.category) }} {{
+                    getCategoryName(item.category) }}
+                  </span>
+                  <span
+                    v-if="item.rating === 5"
+                    class="card-elite-stamp"
+                    aria-label="最高警戒等級"
+                  >
+                    TOP<br />SECRET
+                  </span>
+                </div>
+
+                <!-- 內容 -->
+                <div class="card-body">
+                  <h3 class="card-title">{{ item.name }}</h3>
+
+                  <div
+                    class="card-rating"
+                    :aria-label="`恐怖指數 ${item.rating} / 5`"
+                  >
+                    <span
+                      v-for="n in 5"
+                      class="card-star"
+                      aria-hidden="true"
+                      :key="n"
+                      :class="{ filled: n <= item.rating }"
+                      >★</span
+                    >
+                  </div>
+
+                  <p class="card-desc">
+                    {{ shouldTruncate(item) && !item.expanded ?
+                    item.description.x(0, LIMITS.TRUNCATE_LEN) + '...' :
+                    item.description }}
+                  </p>
+
+                  <div class="card-footer">
+                    <button
+                      v-if="shouldTruncate(item)"
+                      type="button"
+                      class="btn btn-ghost"
+                      :aria-expanded="!!item.expanded"
+                      @click="item.expanded = !item.expanded"
+                    >
+                      {{ item.expanded ? '◂ 收合報告' : '▸ 展開完整報告' }}
+                    </button>
+                    <span v-else class="card-timestamp">
+                      歸檔於 {{ formatDate(item.createdAt) }}
+                    </span>
+
+                    <button
+                      type="button"
+                      class="btn btn-danger"
+                      :aria-label="`刪除 ${item.name}`"
+                      @click="removeItem(item.id)"
+                    >
+                      銷毀
+                    </button>
+                  </div>
+
+                  <div v-if="item.expanded" class="card-extra">
+                    <div class="extra-row">
+                      <span class="extra-key">歸檔時間</span>
+                      <span class="extra-val">
+                        {{ formatDate(item.createdAt) }}
+                      </span>
+                    </div>
+                    <div class="extra-row">
+                      <span class="extra-key">檔案編號</span>
+                      <span class="extra-val">
+                        PA-{{ String(item.id).padStart(4, '0') }}
+                      </span>
+                    </div>
+                    <div class="extra-row">
+                      <span class="extra-key">機密等級</span>
+                      <span class="extra-val">
+                        {{ item.rating >= LIMITS.HIGH_RISK_RATING ? 'CLASSIFIED'
+                        : 'RESTRICTED' }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+      </main>
+
+      <footer class="site-footer">
+        <p>
+          Paranormal Archive Project · 本資料庫僅供研究用途 ·
+          內容由調查員自行整理
+        </p>
+      </footer>
+    </div>
+
+    <!-- Vue 3 CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+      const { createApp, ref, reactive, computed, onMounted, onUnmounted } =
+        Vue;
+
+      createApp({
+        setup() {
+          // ===== 常數設定 =====
+          // 集中管理所有數字限制，未來只要改這裡，模板與邏輯會自動同步
+          const LIMITS = {
+            NAME_MAX: 30, // 名稱字數上限
+            DESC_MAX: 300, // 簡介字數上限
+            DESC_NEAR: 240, // 簡介接近上限警示閾值（80% of DESC_MAX）
+            TRUNCATE_LEN: 50, // 卡片簡介截斷長度
+            HIGH_RISK_RATING: 4, // 高危險判定星數（≥ 此值算高危險）
+          };
+
+          // ===== 分類定義 =====
+          const categories = [
+            { id: "ghost", name: "靈異現象", icon: "👻" },
+            { id: "cryptid", name: "未確認生物", icon: "🛸" },
+            { id: "psi", name: "超能力", icon: "🔮" },
+            { id: "legend", name: "都市傳說", icon: "📜" },
+            { id: "mystery", name: "未解之謎", icon: "🌀" },
+            { id: "occult", name: "神祕學", icon: "🧙" },
+          ];
+
+          // ===== 預設資料：超自然現象 Top 10 =====
+          const seedData = [
+            {
+              id: 1,
+              name: "百慕達三角洲",
+              category: "mystery",
+              image:
+                "https://upload.wikimedia.org/wikipedia/commons/3/33/Bermuda_Triangle.png",
+              description:
+                "位於北大西洋的神祕海域，自二十世紀中葉以來，數百艘船隻與飛機在此區域離奇消失。部分目擊者聲稱遭遇異常磁場、時間錯亂與超自然光體，至今仍無任何科學理論能完整解釋這片海域的詭異現象。",
+              rating: 5,
+            },
+            {
+              id: 2,
+              name: "尼斯湖水怪",
+              category: "cryptid",
+              image:
+                "https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/3D12/production/_108643651_f9f16222-05b7-4205-98d3-55af44b107cc.jpg.webp",
+              description:
+                "蘇格蘭尼斯湖深處傳聞棲息的巨大未知生物，目擊紀錄可追溯至西元六世紀。歷經多次科學考察與聲納探測，仍有大量影像與目擊報告無法解釋。當地人深信牠仍在湖底悠游，等待下一次浮出水面的機會。",
+              rating: 4,
+            },
+            {
+              id: 3,
+              name: "羅斯威爾事件",
+              category: "cryptid",
+              image:
+                "https://pimg.1px.tw/kason2047/1425158218-2607491276.jpg",
+              description:
+                "1947 年美國新墨西哥州沙漠中疑似 UFO 墜毀事件，軍方初期承認後旋即改口為氣象氣球。多名當地居民聲稱見過非人形屍體被秘密運走，這起事件被視為現代外星人傳說的起點，至今仍是陰謀論者最熱衷的研究對象。",
+              rating: 5,
+            },
+            {
+              id: 4,
+              name: "麥田圈現象",
+              category: "mystery",
+              image:
+                "https://upload.wikimedia.org/wikipedia/commons/d/d5/CropCircleW.jpg",
+              description:
+                "世界各地麥田中突然出現的巨型幾何圖案，部分案例至今無法以人為方式重現。",
+              rating: 4,
+            },
+            {
+              id: 5,
+              name: "都靈裹屍布",
+              category: "occult",
+              image:
+                "https://upload.wikimedia.org/wikipedia/commons/2/23/Turin_shroud_positive_and_negative_displaying_original_color_information_708_x_465_pixels_94_KB.jpg",
+              description:
+                "相傳包裹耶穌遺體的麻布，布上浮現的男子面容與身上傷痕的成因至今仍為宗教與科學界爭論的焦點。儘管碳十四檢測曾指向中世紀，但布上的血跡分析、植物花粉與成像技術皆無法以中世紀工藝重現，謎團持續至今。",
+              rating: 4,
+            },
+            {
+              id: 6,
+              name: "費城實驗",
+              category: "mystery",
+              image:
+                "https://upload.wikimedia.org/wikipedia/commons/3/33/USS_Eldridge_%28DE-173%29_underway%2C_circa_in_1944.jpg",
+              description:
+                "據傳 1943 年美國海軍進行的隱形與瞬間移動實驗，目擊者多數下落不明或精神錯亂。",
+              rating: 5,
+            },
+            {
+              id: 7,
+              name: "安娜貝爾娃娃",
+              category: "ghost",
+              image:
+                "https://cc.tvbs.com.tw/img/upload/2021/09/20/20210920164135-ca689cdc.jpg",
+              description:
+                "收藏於美國華倫超自然博物館的被詛咒娃娃，原型為一只普通的雷格艾蒂娃娃。據傳娃娃會自行移動、留下血跡訊息，並造成多名接觸者離奇死亡。目前被封存於特製玻璃櫃中，櫃外貼有「絕對禁止打開」的警告標示。",
+              rating: 5,
+            },
+            {
+              id: 8,
+              name: "通古斯大爆炸",
+              category: "mystery",
+              image:
+                "https://s.yimg.com/ny/api/res/1.2/W8pqH_lwnCvG.3vSHzz1qw--/YXBwaWQ9aGlnaGxhbmRlcjt3PTk2MDtoPTU4NA--/https://media.zenfs.com/zh-tw/setn.com.tw/cc7690a5f5c35beaa9134d13cca149cd",
+              description:
+                "1908 年西伯利亞發生的神祕大爆炸，威力相當於千枚原子彈，至今爆炸源頭仍無定論。",
+              rating: 4,
+            },
+            {
+              id: 9,
+              name: "大腳怪傳說",
+              category: "cryptid",
+              image:
+                "https://cdn2.ettoday.net/images/5779/d5779588.jpg",
+              description:
+                "北美洲森林中傳說的巨型類人生物，多年來累積大量目擊、足跡與模糊影像紀錄。",
+              rating: 3,
+            },
+            {
+              id: 10,
+              name: "裂嘴女",
+              category: "legend",
+              image:
+                "https://attach.setn.com/newsimages/2021/12/30/3470759-PH.jpg",
+              description:
+                "日本當代怪談中口戴口罩的女性鬼魂，傳聞會在夜晚街頭攔住路人，詢問「我漂亮嗎？」，無論回答是或否皆無法逃脫。她會掀開口罩露出裂至耳際的血盆大口，將遇害者的嘴巴撕裂成與自己相同的模樣，藉此延續詛咒。",
+              rating: 4,
+            },
+          ];
+
+          // ===== State =====
+          const STORAGE_KEY = "paranormal_archive_v1"; // localStorage key 名稱
+          const items = ref([]); // 檔案列表
+          const activeCategory = ref("all"); // 選中的檔案分類
+          const currentTime = ref(""); // 現在時間
+
+          // 新增調查紀錄form
+          const form = reactive({
+            name: "",
+            category: "",
+            image: "",
+            description: "",
+            rating: 3,
+          });
+
+          // 錯誤提示
+          const errors = reactive({
+            name: "",
+            category: "",
+            description: "",
+          });
+
+          // ===== localStorage =====
+          function loadData() {
+            try {
+              const raw =null// localStorage.getItem(STORAGE_KEY);
+              if (raw) {
+                // localStorage 有資料，直接載入 localStorage 資料
+                const parsed = JSON.parse(raw);
+                items.value = parsed.map((item) => ({
+                  ...item,
+                  expanded: false, // 展開收合狀態
+                  imgError: false, // 若圖片顯示錯誤 則顯示預設圖片
+                }));
+              } else {
+                // localStorage 沒有資料，載入預設資料
+                items.value = seedData.map((it) => ({
+                  ...it,
+                  expanded: false,
+                  imgError: false,
+                  createdAt: new Date().toISOString(),
+                }));
+                saveData();
+              }
+            } catch (e) {
+              items.value = [];
+            }
+            console.log(items.value);
+          }
+          function saveData() {
+            try {
+              // cleanDataList =清理過的資料 , persistData = 要保存的資料
+              const cleanDataList = items.value.map(
+                ({ expanded, imgError, ...persistData }) => persistData,
+              );
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(cleanDataList));
+            } catch (e) {
+              console.warn("儲存失敗", e);
+            }
+          }
+
+          // ===== Computed =====
+          // 根據分類 -> 取得所屬的檔案列表
+          const filteredItems = computed(() => {
+            if (activeCategory.value === "all") return items.value;
+            return items.value.filter(
+              (it) => it.category === activeCategory.value,
+            );
+          });
+
+          // 各分類附帶筆數（給篩選列用）
+          // 用 reduce 一次走訪 items 算出每類筆數，再合併到 categories
+          const categoriesWithCount = computed(() => {
+            const countMap = items.value.reduce((acc, it) => {
+              acc[it.category] = (acc[it.category] || 0) + 1;
+              return acc;
+            }, {});
+            return categories.map((cat) => ({
+              ...cat,
+              count: countMap[cat.id] || 0,
+            }));
+          });
+
+          // 平均恐怖指數
+          const avgRating = computed(() => {
+            if (items.value.length === 0) return "0.0";
+            const sum = items.value.reduce((s, it) => s + it.rating, 0);
+            return (sum / items.value.length).toFixed(1);
+          });
+
+          // 高危險檔案 (星星 >= HIGH_RISK_RATING)
+          const highRiskCount = computed(
+            () =>
+              items.value.filter((it) => it.rating >= LIMITS.HIGH_RISK_RATING)
+                .length,
+          );
+
+          // ===== Methods =====
+          // 驗證
+          function validate() {
+            errors.name = !form.name ? "請輸入現象名稱" : "";
+            errors.category = !form.category ? "請選擇分類" : "";
+            errors.description = !form.description ? "請輸入調查摘要" : "";
+            return !errors.name && !errors.category && !errors.description;
+          }
+
+          function addItem() {
+            if (!validate()) return;
+
+            // 取得新增項目的id
+            const nextId =
+              items.value.length === 0
+                ? 1
+                : Math.max(...items.value.map((it) => it.id)) + 1;
+
+            // 新增的項目加到 檔案列表 中的第一個
+            items.value.unshift({
+              id: nextId,
+              name: form.name,
+              category: form.category,
+              image: form.image || "",
+              description: form.description,
+              rating: form.rating,
+              createdAt: new Date().toISOString(), // 取得現在時間
+              expanded: false,
+              imgError: false,
+            });
+            saveData();
+            // reset
+            form.name = "";
+            form.category = "";
+            form.image = "";
+            form.description = "";
+            form.rating = 3;
+          }
+
+          function removeItem(id) {
+            if (!confirm("確定要銷毀這份檔案嗎？此操作無法復原。")) return;
+            items.value = items.value.filter((it) => it.id !== id);
+            saveData();
+          }
+
+          function getCategoryName(catId) {
+            return categories.find((c) => c.id === catId)?.name || "未分類";
+          }
+          function getCategoryIcon(catId) {
+            return categories.find((c) => c.id === catId)?.icon || "❓";
+          }
+          function shouldTruncate(item) {
+            return (
+              item.description && item.description.length > LIMITS.TRUNCATE_LEN
+            );
+          }
+          function formatDate(iso) {
+            if (!iso) return "—";
+            const d = new Date(iso);
+            const pad = (n) => String(n).padStart(2, "0");
+            return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+          }
+
+          // 鍵盤操作星等
+          function onRatingKey(e) {
+            if (e.key === "ArrowRight" || e.key === "ArrowUp") {
+              e.preventDefault();
+              form.rating = Math.min(5, (form.rating || 0) + 1);
+            } else if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
+              e.preventDefault();
+              form.rating = Math.max(1, (form.rating || 1) - 1);
+            }
+          }
+
+          // 時鐘
+          let timer = null;
+          function updateClock() {
+            const d = new Date();
+            const pad = (n) => String(n).padStart(2, "0");
+            currentTime.value = `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+          }
+
+          onMounted(() => {
+            loadData();
+            updateClock();
+            timer = setInterval(updateClock, 1000);
+          });
+          onUnmounted(() => {
+            if (timer) clearInterval(timer);
+          });
+
+          return {
+            LIMITS,
+            categories,
+            categoriesWithCount,
+            items,
+            activeCategory,
+            currentTime,
+            form,
+            errors,
+            filteredItems,
+            avgRating,
+            highRiskCount,
+            addItem,
+            removeItem,
+            getCategoryName,
+            getCategoryIcon,
+            shouldTruncate,
+            formatDate,
+            onRatingKey,
+          };
+        },
+      }).mount("#app");
+    </script>
+  </body>
+</html>
