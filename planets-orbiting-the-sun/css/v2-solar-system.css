@@ -1,0 +1,161 @@
+@charset "UTF-8";
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-image: url(https://img.freepik.com/premium-vector/starry-sky-dark_255502-338.jpg);
+  margin: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.solar-system {
+  position: relative;
+}
+
+.sun {
+  background-image: url(../img/sun.png);
+  background-size: cover;
+  width: 50px;
+  height: 50px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+.orbit {
+  border: 1px solid white;
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  /* 距離: sun ~ mercury -> sun 寬度 50px + 自己星球寬度 20px + 軌道寬度 20px = 90px */
+}
+.orbit.orbit-mercury {
+  width: 90px;
+  height: 90px;
+}
+.orbit {
+  /* 距離: mercury ~ venus -> 上一顆星球的起始位置 90px + 上一顆星球寬度 20px + 自己星球寬度 20px + 軌道寬度 20px = 150px */
+}
+.orbit.orbit-venus {
+  width: 150px;
+  height: 150px;
+}
+.orbit {
+  /* 距離: venus ~ earth -> 上一顆星球的起始位置 150px + 上一顆星球寬度 20px + (自己星球寬度 22px + 月球寬度 10px) + 軌道寬度 30px = 232px */
+}
+.orbit.orbit-earth {
+  width: 232px;
+  height: 232px;
+}
+.orbit {
+  /* 距離: earth ~ mars -> 上一顆星球的起始位置 232px + (上一顆星球寬度 22px + 月球寬度 10px) + 自己星球寬度 20px + 軌道寬度 30px = 314px */
+}
+.orbit.orbit-mars {
+  width: 314px;
+  height: 314px;
+}
+.orbit {
+  /* 距離: mars ~ jupiter -> 上一顆星球的起始位置 314px + 上一顆星球寬度 20px + 自己星球寬度 40px + 軌道寬度 20px = 394px */
+}
+.orbit.orbit-jupiter {
+  width: 394px;
+  height: 394px;
+}
+.orbit {
+  /* 距離: jupiter ~ saturn -> 上一顆星球的起始位置 394px + 上一顆星球寬度 40px + 自己星球寬度 35px = 469px */
+}
+.orbit.orbit-saturn {
+  width: 469px;
+  height: 469px;
+}
+.orbit {
+  /* 距離: saturn ~ uranus -> 上一顆星球的起始位置 469px + 上一顆星球寬度 35px + 自己星球寬度 40px = 544px */
+}
+.orbit.orbit-uranus {
+  width: 544px;
+  height: 544px;
+}
+.orbit {
+  /* 距離: uranus ~ neptune -> 上一顆星球的起始位置 544px + 上一顆星球寬度 20px + 自己星球寬度 17px + 軌道寬度 10px = 591px */
+}
+.orbit.orbit-neptune {
+  width: 591px;
+  height: 591px;
+}
+.orbit {
+  /* 距離: neptune ~ pluto -> 上一顆星球的起始位置 591px + 上一顆星球寬度 17px + 自己星球寬度 17px + 軌道寬度 20px = 645px */
+}
+.orbit.orbit-pluto {
+  width: 645px;
+  height: 645px;
+}
+
+.planet {
+  background-size: cover;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateY(-50%);
+}
+.planet.planet-mercury {
+  background-image: url(../img/mercury.png);
+  width: 20px;
+  height: 20px;
+}
+.planet.planet-venus {
+  background-image: url(../img/venus.png);
+  width: 20px;
+  height: 20px;
+}
+.planet.planet-earth {
+  background-image: url(../img/earth.png);
+  width: 22px;
+  height: 22px;
+}
+.planet.planet-earth .planet-moon {
+  background-image: url(../img/moon.png);
+  width: 10px;
+  height: 10px;
+  left: 100%;
+}
+.planet.planet-mars {
+  background-image: url(../img/mercury.png);
+  width: 20px;
+  height: 20px;
+}
+.planet.planet-jupiter {
+  background-image: url(../img/jupiter.png);
+  width: 40px;
+  height: 40px;
+}
+.planet.planet-saturn {
+  background-image: url(../img/saturn.png);
+  width: 35px;
+  height: 35px;
+  transform: translateY(-50%) rotate(135deg);
+}
+.planet.planet-uranus {
+  background-image: url(../img/uranus.png);
+  width: 20px;
+  height: 20px;
+  transform: translateY(-50%) rotate(90deg);
+}
+.planet.planet-neptune {
+  background-image: url(../img/neptune.png);
+  width: 17px;
+  height: 17px;
+}
+.planet.planet-pluto {
+  background-image: url(../img/pluto.png);
+  width: 17px;
+  height: 17px;
+}/*# sourceMappingURL=v2-solar-system.css.map */

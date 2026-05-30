@@ -1,0 +1,15 @@
+.sun,
+.earth-animation {
+  animation-name: roll-box;
+  animation-duration: 10s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes roll-box {
+  100% {
+    left: 0;
+    top: 0;
+    transform: rotate(-360deg);
+  }
+}/*# sourceMappingURL=v1-animation.css.map */

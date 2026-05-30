@@ -1,0 +1,119 @@
+@charset "UTF-8";
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-image: url(https://img.freepik.com/premium-vector/starry-sky-dark_255502-338.jpg);
+  margin: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.sun {
+  background-image: url(../img/sun.png);
+  background-size: cover;
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+/* 星球 共用設定 */
+.mercury,
+.venus,
+.earth,
+.moon,
+.mars,
+.jupiter,
+.saturn,
+.uranus,
+.neptune {
+  background-size: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* 距離: sun ~ mercury -> sun 寬度 100% */
+.mercury {
+  background-image: url(../img/mercury.png);
+  width: 25px;
+  height: 25px;
+  left: 100%;
+}
+
+/* "星球與星球"距離公式: 上一顆星球的起始位置 + 上一顆星球的寬度 + 軌道寬度 */
+/* 距離: mercury ~ venus -> 上一顆星球的起始位置 "mercury 距離 (100%)" + mercury 寬度 25px + 軌道寬度 25px = 100% + 50px */
+.venus {
+  background-image: url(../img/venus.png);
+  width: 42px;
+  height: 42px;
+  left: calc(100% + 50px);
+}
+
+/* 距離: venus ~ earth -> 上一顆星球的起始位置 "venus 距離 (100% + 50px)" + venus 寬度 42px + 軌道寬度 25px = 100% + 117px */
+.earth {
+  width: 41px;
+  height: 41px;
+  left: calc(100% + 117px);
+}
+
+/* 地球 + 月球 -> 自轉 */
+.earth-animation {
+  width: 100%;
+  height: 100%;
+  background-image: url(../img/earth.png);
+  background-size: cover;
+}
+
+/* 距離: earth ~ moon -> earth 寬度 41px */
+.moon {
+  background-image: url(../img/moon.png);
+  width: 15px;
+  height: 15px;
+  left: 41px;
+}
+
+/* 距離: earth ~ mars -> 上一顆星球的起始位置 "earth 距離 (100% + 117px)" + earth 寬度 41px + moon 寬度 15px + 軌道寬度 25px = 100% + 198px */
+.mars {
+  background-image: url(../img/mars.png);
+  width: 33px;
+  height: 33px;
+  left: calc(100% + 198px);
+}
+
+/* 距離: mars ~ jupiter -> 上一顆星球的起始位置 "venus 距離 (100% + 198px)" + venus 寬度 33px + 軌道寬度 25px = 100% + 256px */
+.jupiter {
+  background-image: url(../img/jupiter.png);
+  width: 87px;
+  height: 87px;
+  left: calc(100% + 256px);
+}
+
+/* 距離: jupiter ~ saturn -> 上一顆星球的起始位置 "venus 距離 (100% + 256px)" + venus 寬度 87px + 軌道寬度 25px = 100% + 368px */
+.saturn {
+  background-image: url(../img/saturn.png);
+  width: 80px;
+  height: 80px;
+  left: calc(100% + 368px);
+}
+
+/* 距離: saturn ~ uranus -> 上一顆星球的起始位置 "saturn 距離 (100% + 368px)" + saturn 寬度 80px + 軌道寬度 25px = 100% + 473px */
+.uranus {
+  background-image: url(../img/uranus.png);
+  width: 42px;
+  height: 42px;
+  left: calc(100% + 473px);
+}
+
+/* 距離: saturn ~ uranus -> 上一顆星球的起始位置 "saturn 距離 (100% + 473px)" + saturn 寬度 42px + 軌道寬度 25px = 100% + 540px */
+.neptune {
+  background-image: url(../img/neptune.png);
+  width: 34px;
+  height: 34px;
+  left: calc(100% + 540px);
+}/*# sourceMappingURL=v1-solar-system.css.map */
