@@ -1,4 +1,4 @@
-# 陳旻青｜Frontend Developer Portfolio
+# Frontend Developer Portfolio
 
 > 好的程式，不只解決今天的問題，而是能被未來工程師理解與維護。
 
